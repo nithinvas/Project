@@ -10,6 +10,25 @@ export interface UserAddressModel {
   postCode: string
 }
 
+export interface ApiResponse {
+  token: Token;
+  userdata: UserData;
+}
+
+export interface UserData {
+  email: string;
+  mobile: string;
+  first_name : string;
+  last_name : string;
+  //id: string;
+  // Add other properties as needed
+}
+
+export interface Token {
+  access: string;
+  refresh: string;
+}
+
 export interface UserCommunicationModel {
   email: boolean
   sms: boolean

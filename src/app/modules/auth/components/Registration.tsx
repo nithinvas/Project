@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {PasswordMeterComponent} from '../../../../_metronic/assets/ts/components'
 import {useAuth} from '../core/Auth'
+import VerifyEmail from './VerifyEmail';
 
 const initialValues = {
   firstname: 'Manoj',
@@ -16,7 +17,7 @@ const initialValues = {
   email: 'manojtanguturi147@gmail.com',
   password: 'demo1234',
   changepassword: 'demo1234',
-  mobile:'7989411075',
+  mobile:'+917989411075',
   acceptTerms: true,
 }
 
@@ -50,106 +51,82 @@ const registrationSchema = Yup.object().shape({
     .oneOf([Yup.ref('password')], "Password and Confirm Password didn't match"),
   acceptTerms: Yup.bool().required('You must accept the terms and conditions'),
   mobile: Yup.string()
-    .required('Mobile number is required')
-    .matches(/^[0-9]{10}$/, 'Invalid mobile number'),
+  .required('Mobile number is required')
+  .matches(/^\+?[0-9]{10,12}$/, 'Invalid mobile number'),
 })
 
 export function Registration() {
   const [loading, setLoading] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
+  const [registrationSuccess, setRegistrationSuccess] = useState(false);
   const formik = useFormik({
     initialValues,
     validationSchema: registrationSchema,
-  //   onSubmit: async (values, {setStatus, setSubmitting}) => {
-     
-  //     setLoading(true)
-  //     try {
-  //       //const {data: auth} = 
-  //       await register(
-  //         values.email,
-  //         values.mobile,
-  //         values.firstname,
-  //         values.lastname,
-  //         values.password,
+    onSubmit: async (values, {setStatus, setSubmitting}) => {
+      setLoading(true)
+      try {
+        
+        const {data: auth} = await register(
+          values.email,
+          values.mobile,
+          values.firstname,
+          values.lastname,
+          values.password,
           
-  //       )
-  //      // saveAuth(auth)
-  //       // setLoading(false);
-  //       //const {data: user} = await getUserByToken(auth.api_token)
-  //       //setCurrentUser(user)
-  //     } catch (error) {
-  //       console.error(error)
-  //       saveAuth(undefined)
-  //       setStatus('The registration details is incorrect')
-  //       setSubmitting(false)
-  //       setLoading(false)
-  //     }
-  //   },
-  // })
-  // onSubmit: async (values, { setStatus, setSubmitting, resetForm, event: React.FormEvent<HTMLFormElement> }) => {
-  //   setSubmitting(true);
-  
-  //   try {
-  //     if (event) {
-  //       event.preventDefault(); // Prevent the default form submission
-  //     }
-  
-  //     const { data: auth } = await register(
-  //       values.email,
-  //       values.mobile,
-  //       values.firstname,
-  //       values.lastname,
-  //       values.password,
-  //     );
-  
-  //     saveAuth(auth);
-  //     setSubmitting(false);
-  //     resetForm(); // Optionally reset the form after successful submission
-  //     // const { data: user } = await getUserByToken(auth.api_token);
-  //     // setCurrentUser(user);
-  //   } catch (error) {
-  //     console.error(error);
-  //     saveAuth(undefined);
-  //     setStatus('The registration details are incorrect');
-  //     setSubmitting(false);
-  //   }
-  // },
-  onSubmit: async (values, { setStatus, setSubmitting, resetForm }) => {
-    try {
-      setLoading(true);
-      const { data: auth } = await register(
-        values.email,
-        values.mobile,
-        values.firstname,
-        values.lastname,
-        values.password
-      );
-      saveAuth(auth);
-      setLoading(false);
-      resetForm(); // Reset the form after successful submission
-    } catch (error) {
-      console.error(error);
-      saveAuth(undefined);
-      setStatus('The registration details are incorrect');
-    } finally {
-      setSubmitting(false);
-      setLoading(false);
-    }
-  },
-  
-})
-  
+        )
+        setStatus('Register success');
+        saveAuth(auth);
+        setSubmitting(false);
+        setLoading(false);
+        setRegistrationSuccess(true);
+
+        
+        //const {data: user} = await getUserByToken(auth.api_token)
+        //setCurrentUser(user)
+      } catch (error) {
+       
+        saveAuth(undefined);
+      
+        if ((error as any).response && (error as any).response.status === 400) {
+          console.log("Error status:",(error as any).response.status);
+      
+          if ((error as any).response.data &&(error as any).response.data.email &&(error as any).response.data.mobile) {
+            // If both email and mobile already exist
+            setStatus('Email and mobile already exist. Please use different ones.');
+          } else if ((error as any).response.data &&(error as any).response.data.email) {
+            // If only email already exists
+            setStatus('Email already exists. Please use a different one.');
+          } else if ((error as any).response.data &&(error as any).response.data.mobile) {
+            // If only mobile already exists
+            setStatus('Mobile number already exists. Please use a different one.');
+          } else {
+            // If the(error as any) message structure is unexpected, set a generic message
+            setStatus('The registration details are incorrect');
+          }
+        } else {
+          setStatus('An error occurred during registration');
+        }
+      
+        setSubmitting(false);
+        setLoading(false);
+      }
+      
+    },
+  })
+
   useEffect(() => {
     PasswordMeterComponent.bootstrap()
   }, [])
 
   return (
+    <div>
+    {!registrationSuccess && ( 
     <form
+      method='POST'
       className='form w-100 fv-plugins-bootstrap5 fv-plugins-framework'
-      onSubmit={formik.handleSubmit}
       noValidate
       id='kt_login_signup_form'
-      method='POST'
+      onSubmit={formik.handleSubmit}
       
     >
       {/* begin::Heading */}
@@ -466,5 +443,13 @@ export function Registration() {
       </div>
       {/* end::Form group */}
     </form>
+    )}
+    {registrationSuccess && ( // Step 2
+    <div>
+         <h1>HH</h1>
+        <VerifyEmail email={formik.values.email} /> 
+        </div>
+      )}
+      </div>
   )
 }

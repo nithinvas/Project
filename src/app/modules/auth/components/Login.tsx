@@ -2,11 +2,12 @@
 import {useState} from 'react'
 import * as Yup from 'yup'
 import clsx from 'clsx'
-import {Link, Navigate} from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import {useFormik} from 'formik'
 import {getUserByToken, login} from '../core/_requests'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
+import { ApiResponse } from "../core/_models";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -21,8 +22,8 @@ const loginSchema = Yup.object().shape({
 })
 
 const initialValues = {
-  email: 'adepunithin987@gmail.com',
-  password: 'mech1234',
+  email: '20bcs225@iiitdmj.ac.in',
+  password: 'demo1234',
 }
 
 /*
@@ -34,6 +35,7 @@ const initialValues = {
 export function Login() {
   const [loading, setLoading] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
+  const navigate = useNavigate();
 
   const formik = useFormik({
     initialValues,
@@ -42,18 +44,14 @@ export function Login() {
       setLoading(true)
       try {
         
-        const {data: auth} = await login(values.email, values.password)
+        const {data : auth} = await login(values.email, values.password)
         saveAuth(auth)
         setLoading(false);
-        
-//         const api_token = (auth as any)?.token?.access;
-// const refreshToken = (auth as any)?.token?.refresh;
-        
-
-// console.log('Access Token:', api_token);
-// console.log('Refresh Token:', refreshToken);
-         const {data: user} = await getUserByToken((auth as any)?.token?.access)
-         setCurrentUser(user)
+        console.log("Login");
+        console.log(auth);
+        //  const {data: user} = await getUserByToken((auth as any)?.token?.access)
+         //setCurrentUser(auth);
+         navigate('../auth/Home');
       } catch (error) {
         
         console.error(error)
