@@ -4,7 +4,8 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 import {useFormik} from 'formik'
-import {getUserByToken, login} from '../core/_requests'
+
+import {login} from '../core/_requests'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
 import { ApiResponse } from "../core/_models";
@@ -46,12 +47,9 @@ export function Login() {
         
         const {data : auth} = await login(values.email, values.password)
         saveAuth(auth)
+        setCurrentUser(auth.userdata);
         setLoading(false);
-        console.log("Login");
-        console.log(auth);
-        //  const {data: user} = await getUserByToken((auth as any)?.token?.access)
-         //setCurrentUser(auth);
-         navigate('../auth/Home');
+        navigate('../auth/Home');
       } catch (error) {
         
         console.error(error)

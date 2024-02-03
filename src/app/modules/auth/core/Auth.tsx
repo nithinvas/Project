@@ -5,6 +5,7 @@ import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
 import {getUserByToken} from './_requests'
 import {WithChildren} from '../../../../_metronic/helpers'
+import { stringify } from 'querystring'
 
 type AuthContextProps = {
   auth: AuthModel | undefined
@@ -35,6 +36,7 @@ const AuthProvider: FC<WithChildren> = ({children}) => {
     setAuth(auth)
     if (auth) {
       authHelper.setAuth(auth)
+      setCurrentUser(auth.userdata);
     } else {
       authHelper.removeAuth()
     }
@@ -61,10 +63,13 @@ const AuthInit: FC<WithChildren> = ({children}) => {
     const requestUser = async (apiToken: string) => {
       try {
         if (!currentUser) {
+          setCurrentUser(auth?.userdata)
+          /*
           const {data} = await getUserByToken(apiToken)
           if (data) {
             setCurrentUser(data)
           }
+          */
         }
       } catch (error) {
         console.error(error)
@@ -76,8 +81,9 @@ const AuthInit: FC<WithChildren> = ({children}) => {
       }
     }
 
-    if (auth && auth.api_token) {
-      requestUser(auth.api_token)
+    if (auth && auth) {
+      let authStr = auth.toString();
+      requestUser(authStr)
     } else {
       logout()
       setShowSplashScreen(false)
