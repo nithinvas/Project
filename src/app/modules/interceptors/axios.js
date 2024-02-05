@@ -1,16 +1,21 @@
 import axios from "axios";
 import { url } from "inspector";
 import { config } from "process";
+import useAuth from '../core/Auth'
 
 axios.defaults.baseURL='https://stageio.symplify.app';
 
 axios.interceptors.response.use(
     resp => resp,  // onFulfilled: return the response unchanged
+    // onFulfilled: return the response unchanged
     async error => {
+      const {auth, saveAuth, setCurrentUser} = useAuth()
       console.log("err", error);
       if (error.response.status === 401) {
-        const response = await axios.post('/refresh', {}, { withCredentials: true });
+        const response = await refresh(auth.refresh);
+        
         if (response.status === 200) {
+          saveAuth(response.data)
           axios.defaults.headers.common['Authorization'] = `Bearer ${response.data['token']}`;
           return axios(error.config);
         }

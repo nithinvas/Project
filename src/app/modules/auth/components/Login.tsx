@@ -5,10 +5,10 @@ import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 import {useFormik} from 'formik'
 
-import {login} from '../core/_requests'
+import {login, refresh} from '../core/_requests'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
-import { ApiResponse } from "../core/_models";
+import { ApiResponse, AuthModel, UserData } from "../core/_models";
 
 const loginSchema = Yup.object().shape({
   email: Yup.string()
@@ -45,9 +45,11 @@ export function Login() {
       setLoading(true)
       try {
         
-        const {data : auth} = await login(values.email, values.password)
-        saveAuth(auth)
-        setCurrentUser(auth.userdata);
+        const { data } = await login(values.email, values.password);
+        const {token, userdata} = data;
+        saveAuth(token)
+        setCurrentUser(userdata);
+        
         setLoading(false);
         navigate('../auth/Home');
       } catch (error) {

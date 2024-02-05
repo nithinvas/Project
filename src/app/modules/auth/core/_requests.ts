@@ -1,10 +1,11 @@
 import axios from "axios";
-import { AuthModel, UserModel } from "./_models";
+import { ApiResponse, AuthModel, UserModel } from "./_models";
 
 const API_URL = import.meta.env.VITE_APP_API_URL;
 
 export const GET_USER_BY_ACCESSTOKEN_URL = `${API_URL}/verify_token`;
 export const LOGIN_URL = `${API_URL}/api/accounts/login/`;
+export const REFRESH_URL = `${API_URL}/api/accounts/refresh/`;
 export const REGISTER_URL = `${API_URL}/api/accounts/register/`;
 export const REQUEST_PASSWORD_URL = `${API_URL}/api/accounts/password/forgot/`;
 export const VERIFY_EMAIL_URL = `${API_URL}/api/accounts/verify/email/`;
@@ -13,12 +14,19 @@ export const RESET_PASSWORD_URL = `${API_URL}/api/accounts/password/reset/`
 // Server should return AuthModel
 
 export async function login(email: string, password: string) {
-  const response = await axios.post<AuthModel>(LOGIN_URL, {
+  const response = await axios.post<ApiResponse>(LOGIN_URL, {
     email,
     password
 });
     
     axios.defaults.headers.common['Authorization']=`Bearer ${(response.data as any).token.access}`;
+    return response;
+}
+
+export async function refresh(refresh: string) {
+  const response = await axios.post<AuthModel>(REFRESH_URL, {refresh});
+    
+    axios.defaults.headers.common['Authorization']=`Bearer ${(response.data as any).access}`;
     return response;
 }
 

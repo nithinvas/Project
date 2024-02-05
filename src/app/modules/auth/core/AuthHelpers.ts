@@ -8,12 +8,14 @@ const getAuth = (): AuthModel | undefined => {
   }
   
   const lsValue: string | null = localStorage.getItem(AUTH_LOCAL_STORAGE_KEY)
+  console.log("lsValue", lsValue, typeof lsValue);
   if (!lsValue) {
     return
   }
 
   try {
     const auth: AuthModel = JSON.parse(lsValue) as AuthModel
+    console.log("authH...", auth, typeof auth)
     if (auth) {
       // You can easily check auth_token expiration also
       return auth
@@ -29,7 +31,7 @@ const setAuth = (auth: AuthModel) => {
   }
 
   try {
-    const lsValue = JSON.stringify(auth.token.access)
+    const lsValue = JSON.stringify(auth.access)
     localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, lsValue)
   } catch (error) {
     console.error('AUTH LOCAL STORAGE SAVE ERROR', error)
@@ -53,8 +55,8 @@ export function setupAxios(axios: any) {
   axios.interceptors.request.use(
     (config: {headers: {Authorization: string}}) => {
       const auth = getAuth()
-      if (auth && auth) {
-        config.headers.Authorization = `Bearer ${auth}`
+      if (auth && auth.access) {
+        config.headers.Authorization = `Bearer ${auth.access}`
       }
 
       return config

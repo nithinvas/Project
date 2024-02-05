@@ -1,6 +1,6 @@
 export interface AuthModel {
-  token: Token
-  userdata?: UserModel
+  access: string
+  refresh?: string
 }
 
 export interface UserAddressModel {
@@ -12,7 +12,7 @@ export interface UserAddressModel {
 
 export interface ApiResponse {
   token: Token;
-  userdata: UserData;
+  userdata: UserModel;
 }
 
 export interface UserData {
