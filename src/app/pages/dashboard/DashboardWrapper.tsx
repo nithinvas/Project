@@ -16,9 +16,15 @@ import {
   ListsWidget26,
   EngageWidget10,
 } from '../../../_metronic/partials/widgets'
+import { empclinic } from '../../modules/auth/core/api'
 
 const DashboardPage: FC = () => (
   <>
+    <div className='row'>
+      <div className='col-md-12'>
+        Test Dashboard
+      </div>
+    </div>
     {/* begin::Row */}
     <div className='row g-5 g-xl-10 mb-5 mb-xl-10'>
       {/* begin::Col */}
@@ -114,6 +120,19 @@ const DashboardPage: FC = () => (
 
 const DashboardWrapper: FC = () => {
   const intl = useIntl()
+  
+  const getEmpClinic = async () => {
+    try {
+      const response = await empclinic();
+      
+      console.log("emp clinic ....", response);
+    } 
+    catch(e) {
+      console.log("e...", e)
+    }
+  }
+
+  getEmpClinic();
   return (
     <>
       <PageTitle breadcrumbs={[]}>{intl.formatMessage({id: 'MENU.DASHBOARD'})}</PageTitle>

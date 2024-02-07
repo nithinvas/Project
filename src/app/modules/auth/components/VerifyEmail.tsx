@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 import {useFormik} from 'formik'
-import {verifyemailid} from '../core/_requests'
+import {verifyemailid} from '../core/api'
 
 
 

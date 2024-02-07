@@ -3,7 +3,7 @@ import {FC, useState, useEffect, createContext, useContext, Dispatch, SetStateAc
 import {LayoutSplashScreen} from '../../../../_metronic/layout/core'
 import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
-import {getUserByToken} from './_requests'
+import {getUserByToken} from './api'
 import {WithChildren} from '../../../../_metronic/helpers'
 import { stringify } from 'querystring'
 
@@ -84,20 +84,21 @@ const AuthInit: FC<WithChildren> = ({children}) => {
     }
     */
 
-    console.log("auth....", auth)
+    // console.log("auth....", auth)
     try {
       const verifyAccess = authHelper.getAuth();
-      console.log("verifyAccess", verifyAccess)
+      // console.log("verifyAccess", verifyAccess)
     }
     catch(e) {
       console.log("e....", e)
     }
     // const verifyAccess = authHelper.getAuth();
     if (!!auth) {
+      setShowSplashScreen(false)
       // requestUser(auth.access)
     } else {
       console.log("NO AUTH Access")
-      //logout()
+      logout()
       setShowSplashScreen(false)
     }
     // eslint-disable-next-line

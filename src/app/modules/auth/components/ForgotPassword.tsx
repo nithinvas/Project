@@ -3,7 +3,7 @@ import * as Yup from 'yup'
 import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 import {useFormik} from 'formik'
-import {requestPassword,resetPassword} from '../core/_requests'
+import {requestPassword,resetPassword} from '../core/api'
 
 const initialValues = {
   email: '20bcs225@iiitdmj.ac.in',

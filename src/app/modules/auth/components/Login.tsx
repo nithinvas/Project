@@ -5,7 +5,7 @@ import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 import {useFormik} from 'formik'
 
-import {login, refresh} from '../core/_requests'
+import {login, refresh} from '../core/api'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
 import { ApiResponse, AuthModel, UserData } from "../core/_models";

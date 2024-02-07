@@ -8,14 +8,14 @@ const getAuth = (): AuthModel | undefined => {
   }
   
   const lsValue: string | null = localStorage.getItem(AUTH_LOCAL_STORAGE_KEY)
-  console.log("lsValue", lsValue, typeof lsValue);
+  // console.log("lsValue", lsValue, typeof lsValue);
   if (!lsValue) {
     return
   }
 
   try {
     const auth: AuthModel = JSON.parse(lsValue) as AuthModel
-    console.log("authH...", auth, typeof auth)
+    // console.log("authH...", auth, typeof auth)
     if (auth) {
       // You can easily check auth_token expiration also
       return auth
