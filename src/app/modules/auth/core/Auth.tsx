@@ -3,9 +3,9 @@ import {FC, useState, useEffect, createContext, useContext, Dispatch, SetStateAc
 import {LayoutSplashScreen} from '../../../../_metronic/layout/core'
 import {AuthModel, UserModel} from './_models'
 import * as authHelper from './AuthHelpers'
-import {getUserByToken} from './api'
+
 import {WithChildren} from '../../../../_metronic/helpers'
-import { stringify } from 'querystring'
+
 
 type AuthContextProps = {
   auth: AuthModel | undefined

@@ -60,7 +60,7 @@ export function setupAxios(axios: any) {
     (config: {headers: {Authorization: string}}) => {
       const auth = getAuth()
       if (auth && auth.access) {
-        config.headers.Authorization = `Bearer ${auth.access}`
+        config.headers.Authorization = `JWT ${auth.access}`
       }
 
       return config

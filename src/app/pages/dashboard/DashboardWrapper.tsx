@@ -2,6 +2,7 @@ import {FC, useEffect} from 'react'
 import {useIntl} from 'react-intl'
 import {toAbsoluteUrl} from '../../../_metronic/helpers'
 import {PageTitle} from '../../../_metronic/layout/core'
+
 import {
   ListsWidget2,
   ListsWidget3,
@@ -16,8 +17,10 @@ import {
   ListsWidget26,
   EngageWidget10,
 } from '../../../_metronic/partials/widgets'
-import { empclinic } from '../../modules/auth/core/api'
 import useAxiosPrivate from "../../modules/auth/core/useAxiosPrivate";
+
+import { EMP_CLINIC, empclinic } from '../../modules/auth/core/api'
+import { appendFile } from 'fs'
 
 const DashboardPage: FC = () => (
   <>
@@ -120,33 +123,20 @@ const DashboardPage: FC = () => (
 )
 
 const DashboardWrapper: FC = () => {
-  const intl = useIntl()
-  const api = useAxiosPrivate()
-
+  const intl = useIntl();
+  const api=useAxiosPrivate()
   useEffect(() => {
-    let isMounted = true;
-    const controller = new AbortController();
-
-    const getClinicEmpList = async () => {
-        try {
-            const response = await api.get('/clinic/as_employee/list/', {
-                signal: controller.signal
-            });
-            console.log(response.data);
-            // isMounted && setUsers(response.data);
-        } catch (err) {
-            console.error(err);
-            // navigate('/login', { state: { from: location }, replace: true });
-        }
-    }
+    const getClinicEmpList = async () => { // Move async here
+      try {
+        const response = await api.get(EMP_CLINIC);
+        console.log(response.data);
+      } catch (err) {
+        console.log(err);
+      }
+    };
 
     getClinicEmpList();
-
-    return () => {
-        isMounted = false;
-        controller.abort();
-    }
-}, [])
+  },[]);
 
   return (
     <>
