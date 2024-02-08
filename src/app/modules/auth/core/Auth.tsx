@@ -104,8 +104,6 @@ const AuthInit: FC<WithChildren> = ({children}) => {
     // eslint-disable-next-line
   }, [])
 
-  console.log("showSplashScreen", showSplashScreen)
-
   return showSplashScreen ? <LayoutSplashScreen /> : <>{children}</>
 }
 

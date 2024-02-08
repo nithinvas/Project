@@ -5,7 +5,9 @@ import {useFormik} from 'formik'
 import * as Yup from 'yup'
 import clsx from 'clsx'
 // import {getUserByToken, register} from '../core/_requests'
-import {register} from '../core/api'
+// import {register} from '../core/api'
+import useAxiosPrivate from '../core/useAxiosPrivate'
+
 import {Link} from 'react-router-dom'
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {PasswordMeterComponent} from '../../../../_metronic/assets/ts/components'
@@ -57,6 +59,7 @@ const registrationSchema = Yup.object().shape({
 })
 
 export function Registration() {
+  const api = useAxiosPrivate();
   const [loading, setLoading] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
   const [registrationSuccess, setRegistrationSuccess] = useState(false);
@@ -65,16 +68,18 @@ export function Registration() {
     validationSchema: registrationSchema,
     onSubmit: async (values, {setStatus, setSubmitting}) => {
       setLoading(true)
+
+      const payload = {
+        email: values.email,
+        mobile: values.mobile,
+        first_name: values.firstname,
+        last_name: values.lastname,
+        password: values.password,
+      }
+
       try {
-        
-        const {data: auth} = await register(
-          values.email,
-          values.mobile,
-          values.firstname,
-          values.lastname,
-          values.password,
-          
-        )
+        const {data: auth} = await api.post('/accounts/register/', payload);
+
         setStatus('Register success');
         saveAuth(auth);
         setSubmitting(false);

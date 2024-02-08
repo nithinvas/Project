@@ -21,7 +21,6 @@ const {BASE_URL} = import.meta.env
 
 const AppRoutes: FC = () => {
   const {auth} = useAuth()
-  console.log("ddd...", auth)
   return (
     <BrowserRouter basename={BASE_URL}>
       <Routes>

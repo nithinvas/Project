@@ -5,7 +5,8 @@ import clsx from 'clsx'
 import { Link, useNavigate } from 'react-router-dom'
 import {useFormik} from 'formik'
 
-import {login, refresh} from '../core/api'
+// import {login, refresh} from '../core/api'
+import useAxiosPrivate from "../core/useAxiosPrivate";
 import {toAbsoluteUrl} from '../../../../_metronic/helpers'
 import {useAuth} from '../core/Auth'
 import { ApiResponse, AuthModel, UserData } from "../core/_models";
@@ -34,6 +35,7 @@ const initialValues = {
 */
 
 export function Login() {
+  const api = useAxiosPrivate();
   const [loading, setLoading] = useState(false)
   const {saveAuth, setCurrentUser} = useAuth()
   const navigate = useNavigate();
@@ -44,9 +46,13 @@ export function Login() {
     onSubmit: async (values, {setStatus, setSubmitting}) => {
       setLoading(true)
       try {
-        
-        const { data } = await login(values.email, values.password);
+        const payload = {
+          email: values.email,
+          password: values.password
+        }
+        const { data } = await api.post<ApiResponse>('/accounts/login/', payload);
         const {token, userdata} = data;
+        console.log("test", token)
         saveAuth(token)
         setCurrentUser(userdata);
         

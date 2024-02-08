@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {AuthModel} from './_models'
 
-const AUTH_LOCAL_STORAGE_KEY = 'kt-auth-react-v'
+const AUTH_LOCAL_STORAGE_KEY = 'access_token'
+const AUTH_REFRESH_STORAGE_KEY='refresh_token'
 const getAuth = (): AuthModel | undefined => {
   if (!localStorage) {
     return
@@ -32,7 +33,9 @@ const setAuth = (auth: AuthModel) => {
 
   try {
     const lsValue = JSON.stringify(auth.access)
+    const refsValue = JSON.stringify(auth.refresh)
     localStorage.setItem(AUTH_LOCAL_STORAGE_KEY, lsValue)
+    localStorage.setItem(AUTH_REFRESH_STORAGE_KEY, refsValue)
   } catch (error) {
     console.error('AUTH LOCAL STORAGE SAVE ERROR', error)
   }
@@ -45,6 +48,7 @@ const removeAuth = () => {
 
   try {
     localStorage.removeItem(AUTH_LOCAL_STORAGE_KEY)
+    localStorage.removeItem(AUTH_REFRESH_STORAGE_KEY)
   } catch (error) {
     console.error('AUTH LOCAL STORAGE REMOVE ERROR', error)
   }
@@ -65,4 +69,4 @@ export function setupAxios(axios: any) {
   )
 }
 
-export {getAuth, setAuth, removeAuth, AUTH_LOCAL_STORAGE_KEY}
+export {getAuth, setAuth, removeAuth, AUTH_LOCAL_STORAGE_KEY, AUTH_REFRESH_STORAGE_KEY}
